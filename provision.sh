@@ -84,11 +84,13 @@ sudo nginx -t
 # Reiniciar Nginx para aplicar los cambios
 sudo systemctl restart nginx
 
+#!/bin/bash
+
 # 1. Actualizar repositorios e instalar Nginx y openssl
 apt update
 apt install -y nginx openssl
 
-# 2. Crear la carpeta del sitio web si no existe
+# 2. Crear la carpeta del sitio web
 sudo mkdir -p /var/www/nuevo_sitio/html
 
 # 3. Copiar el contenido de la carpeta html a /var/www/nuevo_sitio/html
@@ -116,18 +118,17 @@ server {
     location / {
         auth_basic "Área restringida";
         auth_basic_user_file /etc/nginx/.htpasswd;
-        try_files \$uri \$uri/ =404;
     }
 }
 EOL
 
-# Crear enlace simbólico en sites-enabled
+# 6. Crear enlace simbólico en sites-enabled
 sudo ln -s /etc/nginx/sites-available/nuevo_sitio /etc/nginx/sites-enabled/
 
-# 6. Reiniciar Nginx para aplicar los cambios
+# 7. Reiniciar Nginx para aplicar los cambios
 sudo systemctl restart nginx
 
-# 7. Configurar Nginx para denegar acceso desde la IP de la máquina anfitriona
+# 8. Configurar Nginx para denegar acceso desde la IP de la máquina anfitriona
 cat <<EOL | sudo tee /etc/nginx/sites-available/nuevo_sitio
 server {
     listen 80;
@@ -141,15 +142,14 @@ server {
         allow all;
         auth_basic "Área restringida";
         auth_basic_user_file /etc/nginx/.htpasswd;
-        try_files \$uri \$uri/ =404;
     }
 }
 EOL
 
-# 8. Reiniciar Nginx para aplicar los cambios
+# 9. Reiniciar Nginx para aplicar los cambios
 sudo systemctl restart nginx
 
-# 9. Configurar Nginx para requerir tanto una IP válida como un usuario válido
+# 10. Configurar Nginx para requerir tanto una IP válida como un usuario válido
 cat <<EOL | sudo tee /etc/nginx/sites-available/nuevo_sitio
 server {
     listen 80;
@@ -164,10 +164,9 @@ server {
         allow 192.168.32.0/24;
         auth_basic "Área restringida";
         auth_basic_user_file /etc/nginx/.htpasswd;
-        try_files \$uri \$uri/ =404;
     }
 }
 EOL
 
-# 10. Reiniciar Nginx para aplicar los cambios
+# 11. Reiniciar Nginx para aplicar los cambios
 sudo systemctl restart nginx
