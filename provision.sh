@@ -118,6 +118,7 @@ server {
     location / {
         auth_basic "Área restringida";
         auth_basic_user_file /etc/nginx/.htpasswd;
+        try_files $uri $uri/ =404;
     }
 }
 EOL
